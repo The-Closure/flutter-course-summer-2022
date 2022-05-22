@@ -49,53 +49,16 @@ class _MyHomePageState extends State<MyHomePage> {
     double deviceInfoheight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(),
-      body: Builder(
-        builder: (context) {
-          if (MediaQuery.of(context).size.height > 400)
-            return Scaffold(
-              body: Center(
-                  child: Row(
-                children: [
-                  Column(
-                    children: [
-                      Text('data'),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text('search here'),
-                      ),
-                      RaisedButton(
-                        onPressed: () {},
-                        child: Text('press here'),
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [],
-                  ),
-                ],
-              )),
-            );
-          else {
-            return Scaffold(
-              body: Center(
-                child: Container(),
-              ),
-              drawer: Column(
-                children: [
-                  Text('data'),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text('search here'),
-                  ),
-                  RaisedButton(
-                    onPressed: () {},
-                    child: Text('press here'),
-                  ),
-                ],
-              ),
-            );
-          }
-        },
+      body: Center(
+        child: Transform.rotate(
+          angle: 5.0,
+          origin: Offset(30.0, 30.0),
+          child: Container(
+            width: 300,
+            height: 300,
+            color: Colors.red,
+          ),
+        ),
       ),
     );
   }
