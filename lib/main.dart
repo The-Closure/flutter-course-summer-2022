@@ -1,18 +1,14 @@
+import 'package:bloc/bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:themeandmedia/bloc/theme_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+ ThemeData _themeData = ThemeData();
 
 void main() {
   runApp(MyApp());
 }
-
-// ThemeData _themeData = ThemeData(
-//     textTheme: TextTheme(
-//       bodyText2: TextStyle(
-//         color: Colors.red,
-//         backgroundColor: Colors.blue,
-//       ),
-//     ),
-//     floatingActionButtonTheme:
-//         FloatingActionButtonThemeData(backgroundColor: Colors.black));
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
@@ -22,8 +18,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      theme: _themeData,
+      home: BlocProvider(
+        create: (context) => ThemeBloc(),
+        child: MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
     );
   }
 }
@@ -39,27 +38,45 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
-    double deviceInfowidth = MediaQuery.of(context).size.width;
-    double deviceInfoheight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Transform.rotate(
-          angle: 5.0,
-          origin: Offset(30.0, 30.0),
-          child: Container(
-            width: 300,
-            height: 300,
-            color: Colors.red,
-          ),
-        ),
-      ),
-    );
+        appBar: AppBar(),
+        body: BlocConsumer<ThemeBloc, ThemeState>(
+          listener: (context, state) {
+            if (state is lightmode) {
+              showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay(hour: 2, minute: 20));
+            } else {
+              showDatePicker(
+                  context: context,
+                  initialDate: DateTime(2010),
+                  firstDate: DateTime(1999),
+                  lastDate: DateTime(2300));
+            }
+          },
+          builder: (context, state) {
+            if (state is Darkmode) {
+              return Container(
+                child: Center(
+                    child: ElevatedButton(
+                        onPressed: () {
+                          context.read<ThemeBloc>().add(lightness());
+                        },
+                        child: Text('Change mode'))),
+              );
+            } else {
+              return Container(
+                child: Center(
+                    child: ElevatedButton(
+                        onPressed: () {
+                          context.read<ThemeBloc>().add(darkness());
+                        },
+                        child: Text('Change mode'))),
+              );
+            }
+          },
+        ));
   }
 }
